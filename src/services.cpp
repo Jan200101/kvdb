@@ -42,7 +42,7 @@ int vdb_recv_serial_pipe(char *udata, std::size_t max_size, int timeout)
 int vdb_launch_debug(const char *executable)
 {
     constexpr size_t maxStringLength = 255;
-    char path[maxStringLength];
+    char path[maxStringLength+1];
     int state = 0;
     ENTER_SYSCALL(state);
     

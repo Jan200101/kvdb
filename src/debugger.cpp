@@ -42,10 +42,11 @@ namespace
         return &command;
     }
 
-    int dummy_handler()
-    {
-        return 0;
-    }
+    int dummy_handler_i(int a1, int a2, int a3) { /* dummy */ return 0; }
+    void dummy_handler_p(SceUID pid) { /* dummy */ }    
+    void dummy_handler_pft(SceUID pid, int flags, uint64_t time) { /* dummy */ }
+    void dummy_handler_pmt(SceUID pid, SceUID modid, uint64_t time) { /* dummy */ }
+    void dummy_handler_pmft(SceUID pid, SceUID modid, int flags, uint64_t time) { /* dummy */ }
 }
 
 Debugger *Debugger::instance()
@@ -82,19 +83,16 @@ Debugger::Debugger()
     m_cmd_list = g_cmd_list;
     m_cmd_list_n = g_cmd_n;
 
-    m_proc_handler = 
-    {
-        sizeof(SceSysrootProcessHandler),
-        ::dummy_handler,
-        ::dummy_handler,
-        ::dummy_handler,
-        ::dummy_handler,
-        ::dummy_handler,
-        ::dummy_handler,
-        on_process_created_handler,
-        ::dummy_handler,
-        ::dummy_handler
-    };
+    m_proc_handler.size = sizeof(SceSysrootProcessHandler);
+    m_proc_handler.unk_4 = ::dummy_handler_pmft;
+    m_proc_handler.exit = ::dummy_handler_pft;
+    m_proc_handler.kill = ::dummy_handler_p;
+    m_proc_handler.unk_10 = ::dummy_handler_pmt;
+    m_proc_handler.unk_14 = ::dummy_handler_pmt;
+    m_proc_handler.unk_18 = ::dummy_handler_pmt;
+    m_proc_handler.on_process_created = ::dummy_handler_i;
+    m_proc_handler.unk_20 = ::dummy_handler_pmt;
+    m_proc_handler.unk_24 = ::dummy_handler_pmft;
 
     memset(m_stdout_cache, 0, sizeof(m_stdout_cache));
 
